@@ -31,7 +31,7 @@ export default function RoutesApp() {
           }
         />
         <Route
-          path="/transactions"
+          path="/transaction-form"
           element={
             <PrivateRoute>
               <TransactionForm />

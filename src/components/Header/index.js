@@ -25,7 +25,7 @@ const Header = () => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link to="/transactions" className="nav-link">
+            <Link to="/transaction-form" className="nav-link">
               <FaMoneyCheckAlt className="nav-icon" /> <span>Transações</span>
             </Link>
           </li>

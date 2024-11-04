@@ -7,24 +7,24 @@
     font-family: Arial, sans-serif;
     transition: margin-left 0.3s ease;
     margin-left: 200px; /* Compensa a largura da sidebar em telas grandes */
-  }
-  
-  .dashboard-container h2 {
+}
+
+.dashboard-container h2 {
     color: #333;
     font-size: 24px;
     margin-bottom: 20px;
     font-weight: 600;
-  }
-  
-  .summary-cards {
+}
+
+.summary-cards {
     display: flex;
     gap: 20px;
     justify-content: space-between;
     flex-wrap: wrap;
     margin-bottom: 30px;
-  }
-  
-  .card {
+}
+
+.card {
     flex: 1;
     padding: 30px;
     border-radius: 10px;
@@ -33,74 +33,157 @@
     color: #fff;
     background-image: linear-gradient(135deg, #667eea, #764ba2);
     transition: transform 0.3s ease;
-  }
-  
-  .income-card {
+}
+
+.income-card {
     background-image: linear-gradient(135deg, #43cea2, #185a9d);
-  }
-  
-  .expense-card {
+}
+
+.expense-card {
     background-image: linear-gradient(135deg, #ff758c, #ff7eb3);
-  }
-  
-  .balance-card.positive {
+}
+
+.balance-card.positive {
     background-image: linear-gradient(135deg, #28a745, #218838);
-  }
-  
-  .balance-card.negative {
+}
+
+.balance-card.negative {
     background-image: linear-gradient(135deg, #dc3545, #c82333);
-  }
-  
-  .card h3 {
+}
+
+.card h3 {
     font-size: 18px;
     margin-bottom: 10px;
     color: #ffffffcc;
-  }
-  
-  .card p {
+}
+
+.card p {
     font-size: 24px;
     font-weight: bold;
-  }
-  
-  /* Estilo da Tabela de Transações */
-  .transactions-table {
+}
+
+/* Estilo da Tabela de Transações */
+.transactions-table {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     overflow-x: auto; /* Permite rolagem horizontal */
-  }
-  
-  .transactions-table h3 {
+}
+
+.transactions-table h3 {
     margin-bottom: 20px;
     font-size: 20px;
     color: #333;
-  }
-  
-  .transactions-table table {
+}
+
+.transactions-table table {
     width: 100%;
     border-collapse: collapse;
-  }
-  
-  .transactions-table th,
-  .transactions-table td {
+}
+
+.transactions-table th,
+.transactions-table td {
     padding: 12px;
     border: 1px solid #ddd;
     text-align: left;
-  }
-  
-  .transactions-table th {
+}
+
+.transactions-table th {
     background-color: #f8f9fa;
     color: #333;
     font-weight: bold;
-  }
-  
-  .transactions-table tr:nth-child(even) {
+}
+
+.transactions-table tr:nth-child(even) {
     background-color: #f9f9f9;
-  }
-  
-  .transactions-table tr:hover {
+}
+
+.transactions-table tr:hover {
     background-color: #e9ecef;
+}
+
+.month-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
   }
   
+  .month-filter label {
+    font-size: 16px;
+    color: #333;
+  }
   
+  .month-filter select {
+    padding: 5px;
+    font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+
+/* Responsividade para Tablets e Telas Médias */
+@media (max-width: 768px) {
+    .dashboard-container {
+        margin-left: 60px; /* Compensa a largura reduzida da sidebar em telas menores */
+        padding: 15px;
+    }
+
+    .summary-cards {
+        flex-direction: column; /* Empilha os cartões em telas menores */
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .transactions-table table,
+    .transactions-table th,
+    .transactions-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .dashboard-container h2 {
+        font-size: 20px;
+    }
+}
+
+/* Responsividade para Dispositivos Móveis */
+@media (max-width: 480px) {
+    .dashboard-container {
+        margin-left: 0; /* Remove a margem da sidebar em dispositivos móveis */
+        padding: 10px;
+    }
+
+    .summary-cards {
+        flex-direction: column; /* Empilha os cartões verticalmente */
+    }
+
+    .card {
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .card h3 {
+        font-size: 16px;
+    }
+
+    .card p {
+        font-size: 20px;
+    }
+
+    .transactions-table {
+        padding: 15px;
+    }
+
+    .transactions-table h3 {
+        font-size: 18px;
+    }
+
+    .transactions-table th,
+    .transactions-table td {
+        font-size: 12px;
+        padding: 6px;
+    }
+}

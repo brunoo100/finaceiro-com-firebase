@@ -1,8 +1,8 @@
 /* src/components/header.css */
 
-/* Estilos gerais da sidebar */
+/* Estilos gerais para a sidebar */
 .sidebar {
-  width: 200px; /* Largura fixa da sidebar em telas grandes */
+  width: 200px;
   height: 100vh;
   background-color: #2c3e50;
   position: fixed;
@@ -13,7 +13,7 @@
   align-items: flex-start;
   padding-top: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, width 0.3s ease;
   z-index: 1000;
 }
 
@@ -65,34 +65,34 @@
   }
 
   .nav-link span {
-    display: none;
+    display: none; /* Esconde o texto dos links em telas menores */
   }
 
   .sidebar:hover .nav-link span {
-    display: inline;
+    display: inline; /* Mostra o texto dos links ao expandir a sidebar */
   }
 }
 
-/* Responsividade para smartphones */
+/* Responsividade para dispositivos móveis */
 @media (max-width: 480px) {
   .sidebar {
-    transform: translateX(-100%); /* Oculta a sidebar por padrão em telas pequenas */
+    transform: translateX(-100%); /* Oculta a sidebar por padrão em dispositivos móveis */
   }
 
   .sidebar.active {
-    transform: translateX(0); /* Mostra a sidebar quando ativa */
+    transform: translateX(0); /* Exibe a sidebar quando ativa */
   }
 
   .menu-button {
     position: fixed;
-    top: 0px;
-    left: 0px;
+    top: 20px;
+    left: 20px;
     background-color: #1abc9c;
     color: #fff;
     border: none;
     border-radius: 5px;
     padding: 10px;
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
     z-index: 1100;
   }

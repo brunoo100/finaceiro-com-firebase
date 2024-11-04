@@ -16,7 +16,7 @@ const Home = () => {
         // Referência ao documento do usuário no Firestore usando o uid
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
-        
+
         if (userSnap.exists()) {
           // Se o documento existe, define o nome do usuário do Firestore
           setUserName(userSnap.data().nome); // Usa o campo "nome" do documento Firestore
@@ -36,19 +36,22 @@ const Home = () => {
       <div className="home-content">
         <h2>Bem-vindo, {userName}!</h2>
         <p>Gerencie suas finanças de forma prática e organizada.</p>
-        
+
         <div className="navigation-cards">
           <Link to="/financial-dashboard" className="nav-card dashboard-card">
             <h3>Dashboard Financeiro</h3>
             <p>Veja um resumo de suas finanças.</p>
           </Link>
 
-          <Link to="/transactions" className="nav-card transactions-card">
-            <h3>Transações</h3>
-            <p>Acesse o histórico de transações financeiras.</p>
+          <Link to="/profile" className="nav-card profile-card">
+            <h3>Perfil</h3>
+            <p>Altere as configurações da sua conta.</p>
           </Link>
 
-          <Link to="/transaction-form" className="nav-card add-transaction-card">
+          <Link
+            to="/transaction-form"
+            className="nav-card add-transaction-card"
+          >
             <h3>Nova Transação</h3>
             <p>Adicione uma nova transação ao sistema.</p>
           </Link>
