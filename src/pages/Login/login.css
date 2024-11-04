@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que as áreas se empilhem em telas menores */
+}
+
+.area-1 {
+    flex: 1;
+    background-image: url(../../img/image.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+}
+
+.area-2 {
+    flex: 1; /* A área 2 ocupa o espaço restante */
+    display: flex; /* Usar flexbox para organizar o conteúdo */
+    flex-direction: column;
+    justify-content: center; /* Centraliza verticalmente */
+    align-items: center; /* Centraliza horizontalmente */
+    padding: 20px; /* Espaçamento interno */
+    background-color: #f0f0f0; /* Fundo da área 2 */
+    height: 100vh; /* Altura total da área 2 */
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #343a40; /* Cor do texto */
+    font-size: 24px; /* Tamanho da fonte do título */
+}
+
+form {
+    width: 100%;
+    max-width: 400px; /* Largura máxima do formulário */
+    background-color: #ffffff; /* Fundo branco */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra para o formulário */
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0; /* Margem entre os campos */
+    border: 1px solid #ced4da; /* Borda padrão */
+    border-radius: 4px; /* Bordas arredondadas */
+    font-size: 16px;
+    transition: border-color 0.3s; /* Transição suave para foco */
+}
+
+input:focus {
+    border-color: #007bff; /* Cor da borda ao focar */
+    outline: none; /* Remove contorno padrão */
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff; /* Cor de fundo do botão */
+    border: none;
+    border-radius: 4px; /* Bordas arredondadas */
+    color: white; /* Cor do texto */
+    font-size: 16px;
+    cursor: pointer; /* Cursor de ponteiro */
+    transition: background-color 0.3s; /* Transição para hover */
+}
+
+button:hover {
+    background-color: #0056b3; /* Cor do botão ao passar o mouse */
+}
+
+p {
+    color: #343a40;
+    font-size: 14px;
+    margin:10px 0;
+    text-align: center; /* Centraliza o texto dos parágrafos */
+}
+
+a {
+    color: #007bff;
+    text-decoration: none; /* Remove o sublinhado */
+}
+
+a:hover {
+    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+    .area-1 {
+        display: none; /* Oculta a area-1 em dispositivos móveis */
+    }
+
+    h1 {
+        font-size: 20px; /* Tamanho da fonte do título menor */
+    }
+
+    form {
+        width: 90%; /* Largura do formulário em telas pequenas */
+    }
+
+    input {
+        font-size: 14px; /* Tamanho da fonte dos inputs menor */
+    }
+
+    button {
+        font-size: 14px; /* Tamanho da fonte do botão menor */
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 18px; /* Tamanho da fonte do título ainda menor */
+    }
+
+    input {
+        padding: 8px; /* Reduz o padding dos inputs */
+    }
+
+    button {
+        padding: 8px; /* Reduz o padding do botão */
+        font-size: 14px; /* Tamanho da fonte do botão ainda menor */
+    }
+}

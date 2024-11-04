@@ -1,0 +1,96 @@
+/* src/pages/TransactionForm.css */
+
+.transaction-form-container {
+    margin-left: 200px; /* Compensa a largura da sidebar */
+    padding: 20px;
+    padding-top: 50px;
+    min-height: 100vh;
+    background-color: #f4f6f8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    transition: margin-left 0.3s ease; /* Transição suave para ajuste de sidebar */
+  }
+  
+  .transaction-form-container h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+  }
+  
+  .message {
+    text-align: center;
+    font-size: 14px;
+    color: #28a745;
+    margin-bottom: 15px;
+  }
+  
+  .transaction-form {
+    width: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .transaction-form label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .transaction-form input,
+  .transaction-form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    font-size: 14px;
+    transition: border 0.3s ease;
+  }
+  
+  .transaction-form input:focus,
+  .transaction-form select:focus {
+    border-color: #1abc9c;
+    outline: none;
+  }
+  
+  .transaction-form button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #1abc9c;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .transaction-form button:hover {
+    background-color: #16a085;
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .transaction-form-container {
+      margin-left: 60px; /* Ajuste para a largura reduzida da sidebar em telas menores */
+      padding: 15px;
+    }
+  
+    .transaction-form {
+      width: 100%;
+      padding: 15px;
+    }
+  }
+  

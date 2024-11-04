@@ -1,0 +1,110 @@
+/* src/pages/Profile.css */
+
+.profile-container {
+    margin-left: 200px; /* Compensa a largura da sidebar */
+    padding: 20px;
+    background-color: #f4f6f8;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    transition: margin-left 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .profile-content {
+    max-width: 500px;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .profile-content h2 {
+    font-size: 26px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+  
+  .message {
+    text-align: center;
+    font-size: 14px;
+    color: #28a745;
+    margin-bottom: 20px;
+  }
+  
+  .profile-info p {
+    font-size: 16px;
+    color: #555;
+    margin: 10px 0;
+    text-align: left;
+  }
+  
+  .profile-info strong {
+    color: #333;
+  }
+  
+  .profile-form {
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .profile-form label {
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  
+  .profile-form input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    margin-bottom: 15px;
+    transition: border-color 0.3s;
+  }
+  
+  .profile-form input[type="text"]:focus {
+    border-color: #1abc9c;
+    outline: none;
+  }
+  
+  .profile-form button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #1abc9c;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .profile-form button:hover {
+    background-color: #16a085;
+    transform: translateY(-2px);
+  }
+  
+  .profile-form button:active {
+    transform: translateY(1px);
+  }
+  
+  @media (max-width: 768px) {
+    .profile-container {
+      margin-left: 0;
+      padding: 10px;
+    }
+  
+    .profile-content {
+      padding: 20px;
+    }
+  }
+  
