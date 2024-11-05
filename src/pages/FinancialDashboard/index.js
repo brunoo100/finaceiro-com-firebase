@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../services/firebase";
-import { getAuth } from "firebase/auth"; // Importando o Firebase Authentication
+import { db, auth } from "../../services/firebase";
 import "./FinancialDashboard.css";
 
 const FinancialDashboard = () => {
@@ -10,33 +9,49 @@ const FinancialDashboard = () => {
   const [incomeTotal, setIncomeTotal] = useState(0);
   const [expenseTotal, setExpenseTotal] = useState(0);
   const [balance, setBalance] = useState(0);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Mês atual por padrão
-  const [user, setUser] = useState(null); // Para armazenar o usuário logado
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Recuperando o usuário logado
+  // Recuperando o usuário logado e seu userId
   useEffect(() => {
-    const auth = getAuth();
-    const currentUser = auth.currentUser; // Pega o usuário logado
-    if (currentUser) {
-      setUser(currentUser); // Define o usuário logado
-      console.log("Usuário logado:", currentUser); // Verifique o usuário logado
-    } else {
-      console.log("Nenhum usuário logado"); // Se não houver usuário logado
-    }
+    const fetchUserId = () => {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        setUserId(currentUser.uid);
+        console.log("Usuário logado:", currentUser.uid);
+      } else {
+        console.log("Nenhum usuário logado");
+      }
+    };
+
+    fetchUserId();
+
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        setUserId(null);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
+  // Recuperando transações para o userId
   useEffect(() => {
     const fetchTransactions = async () => {
-      if (!user) {
-        console.log("Usuário não logado, abortando busca de transações");
-        return; // Se não houver um usuário logado, não faz a busca
+      if (!userId) {
+        console.log("userId não encontrado, abortando busca de transações");
+        setLoading(false);
+        return;
       }
 
-      console.log("Buscando transações para o usuário:", user.uid); // Verifique o UID
+      console.log("Buscando transações para o userId:", userId);
 
       const userTransactionsQuery = query(
         collection(db, "transactions"),
-        where("userId", "==", user.uid) // Filtrando transações pelo UID do usuário
+        where("userId", "==", userId)
       );
 
       const querySnapshot = await getDocs(userTransactionsQuery);
@@ -45,49 +60,69 @@ const FinancialDashboard = () => {
         ...doc.data(),
       }));
 
-      console.log("Transações recuperadas:", fetchedTransactions); // Verifique as transações recuperadas
+      console.log("Transações recuperadas:", fetchedTransactions);
 
       setTransactions(fetchedTransactions);
+      setLoading(false);
     };
 
     fetchTransactions();
-  }, [user]);
+  }, [userId]);
 
+  // Filtrando transações por mês e calculando totais
   useEffect(() => {
     if (transactions.length === 0) {
       console.log("Nenhuma transação encontrada para o usuário");
-    } else {
-      // Filtrar as transações pelo mês selecionado
-      const filtered = transactions.filter((transaction) => {
-        const transactionDate = new Date(transaction.date);
-        return transactionDate.getMonth() + 1 === selectedMonth;
-      });
-
-      console.log("Transações filtradas por mês:", filtered); // Verifique as transações filtradas
-
-      setFilteredTransactions(filtered);
-
-      // Calcular receitas e despesas para o mês filtrado
-      const income = filtered
-        .filter((transaction) => transaction.type === "Receita")
-        .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
-      const expenses = filtered
-        .filter((transaction) => transaction.type === "Despesa")
-        .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
-
-      setIncomeTotal(income);
-      setExpenseTotal(expenses);
-      setBalance(income - expenses);
+      setFilteredTransactions([]);
+      setIncomeTotal(0);
+      setExpenseTotal(0);
+      setBalance(0);
+      return;
     }
+
+    const filtered = transactions.filter((transaction) => {
+      const transactionDate = new Date(transaction.date);
+      return transactionDate.getMonth() + 1 === selectedMonth;
+    });
+
+    console.log("Transações filtradas por mês:", filtered);
+
+    setFilteredTransactions(filtered);
+
+    // Calcular receitas e despesas para o mês filtrado
+    const income = filtered
+      .filter((transaction) => transaction.type.toLowerCase() === "receita")
+      .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+
+    const expenses = filtered
+      .filter((transaction) => transaction.type.toLowerCase() === "despesa")
+      .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+
+    setIncomeTotal(income);
+    setExpenseTotal(expenses);
+    setBalance(income - expenses);
+
+    console.log("Total de receita:", income);
+    console.log("Total de despesa:", expenses);
   }, [transactions, selectedMonth]);
 
+  // Função para mudar o mês
   const handleMonthChange = (event) => {
     setSelectedMonth(parseInt(event.target.value, 10));
   };
 
-  if (!user) {
-    return <div>Carregando...</div>; // Ou algum tipo de loader ou mensagem de erro
+  if (loading) {
+    return <div>Carregando...</div>;
   }
+
+  if (!userId) {
+    return <div>Por favor, faça login para ver suas transações.</div>;
+  }
+
+  const months = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ];
 
   return (
     <div className="dashboard-container">
@@ -97,18 +132,11 @@ const FinancialDashboard = () => {
       <div className="month-filter">
         <label>Filtrar por mês:</label>
         <select value={selectedMonth} onChange={handleMonthChange}>
-          <option value="1">Janeiro</option>
-          <option value="2">Fevereiro</option>
-          <option value="3">Março</option>
-          <option value="4">Abril</option>
-          <option value="5">Maio</option>
-          <option value="6">Junho</option>
-          <option value="7">Julho</option>
-          <option value="8">Agosto</option>
-          <option value="9">Setembro</option>
-          <option value="10">Outubro</option>
-          <option value="11">Novembro</option>
-          <option value="12">Dezembro</option>
+          {months.map((month, index) => (
+            <option key={index} value={index + 1}>
+              {month}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -131,26 +159,30 @@ const FinancialDashboard = () => {
       {/* Tabela de transações */}
       <div className="transactions-table">
         <h3>Detalhes das Transações</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Descrição</th>
-              <th>Tipo</th>
-              <th>Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTransactions.map((transaction) => (
-              <tr key={transaction.id}>
-                <td>{transaction.date}</td>
-                <td>{transaction.description}</td>
-                <td>{transaction.type}</td>
-                <td>R$ {parseFloat(transaction.amount).toFixed(2)}</td>
+        {filteredTransactions.length === 0 ? (
+          <p>Nenhuma transação encontrada para o mês selecionado.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Tipo</th>
+                <th>Valor</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredTransactions.map((transaction) => (
+                <tr key={transaction.id}>
+                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
+                  <td>{transaction.description}</td>
+                  <td>{transaction.type}</td>
+                  <td>R$ {parseFloat(transaction.amount).toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

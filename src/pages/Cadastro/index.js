@@ -6,7 +6,6 @@ import { doc, setDoc } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Certifique-se de que o CSS do Toastify está sendo importado
 
-
 export default function Cadastro() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
@@ -24,12 +23,16 @@ export default function Cadastro() {
     }
 
     try {
+      // Criação do usuário no Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
       const user = userCredential.user;
 
+      // Salvar os dados do usuário na coleção "users" com o uid como chave do documento
       await setDoc(doc(db, "users", user.uid), {
         nome: nome,
         email: email,
+        // Adicionando o userId explicitamente (já é o uid do Firebase)
+        userId: user.uid,
       });
 
       toast.success("Cadastro realizado com sucesso!");
@@ -54,7 +57,7 @@ export default function Cadastro() {
           <label htmlFor="nome">Nome:</label>
           <input
             type="text"
-            placeholder="Digitar seu nome"
+            placeholder="Digite seu nome"
             value={nome}
             onChange={(e) => setNome(e.target.value)}
             required
@@ -63,7 +66,7 @@ export default function Cadastro() {
           <label>Email:</label>
           <input
             type="email"
-            placeholder="Digitar seu email"
+            placeholder="Digite seu email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -71,7 +74,7 @@ export default function Cadastro() {
           <label>Senha:</label>
           <input
             type="password"
-            placeholder="Digitar sua senha"
+            placeholder="Digite sua senha"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
             required
@@ -91,7 +94,6 @@ export default function Cadastro() {
           </button>
 
           <p>Já tem conta? <Link to="/">Login</Link></p>
-
 
         </form>
       </div>
