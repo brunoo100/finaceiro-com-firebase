@@ -49,7 +49,7 @@ const Profile = () => {
 
   return (
     <div className="profile-container">
-      <Header />
+  
       <div className="profile-content">
         <h2>Perfil do Usuário</h2>
         {message && <p className="message">{message}</p>}

@@ -1,7 +1,6 @@
 /* src/pages/TransactionForm.css */
 
 .transaction-form-container {
-    margin-left: 200px; /* Compensa a largura da sidebar */
     padding: 20px;
     padding-top: 50px;
     min-height: 100vh;
@@ -84,7 +83,6 @@
   /* Responsividade */
   @media (max-width: 768px) {
     .transaction-form-container {
-      margin-left: 60px; /* Ajuste para a largura reduzida da sidebar em telas menores */
       padding: 15px;
     }
   

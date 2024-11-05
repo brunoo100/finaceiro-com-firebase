@@ -53,7 +53,7 @@ const FinancialDashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <Header /> {/* Adiciona o Header ao topo */}
+
       <h2>Dashboard Financeiro</h2>
 
       {/* Filtro de mês */}

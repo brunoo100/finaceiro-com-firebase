@@ -32,7 +32,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      <Header /> {/* Adiciona o Header ao topo */}
+  
       <div className="home-content">
         <h2>Bem-vindo, {userName}!</h2>
         <p>Gerencie suas finanças de forma prática e organizada.</p>

@@ -40,7 +40,6 @@ const TransactionForm = () => {
 
   return (
     <div className="transaction-form-container">
-        <Header />
       <h2>Cadastrar Transação</h2>
       {message && <p className="message">{message}</p>}
       <form onSubmit={handleSubmit} className="transaction-form">

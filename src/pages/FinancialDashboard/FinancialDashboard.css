@@ -6,8 +6,7 @@
     min-height: 100vh;
     font-family: Arial, sans-serif;
     transition: margin-left 0.3s ease;
-    margin-left: 200px; /* Compensa a largura da sidebar em telas grandes */
-}
+   }
 
 .dashboard-container h2 {
     color: #333;
