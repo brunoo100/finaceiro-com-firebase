@@ -1,4 +1,3 @@
-// src/pages/FinancialDashboard.js
 import React, { useState, useEffect } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../services/firebase";
@@ -20,12 +19,20 @@ const FinancialDashboard = () => {
     const currentUser = auth.currentUser; // Pega o usuário logado
     if (currentUser) {
       setUser(currentUser); // Define o usuário logado
+      console.log("Usuário logado:", currentUser); // Verifique o usuário logado
+    } else {
+      console.log("Nenhum usuário logado"); // Se não houver usuário logado
     }
   }, []);
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      if (!user) return; // Se não houver um usuário logado, não faz a busca
+      if (!user) {
+        console.log("Usuário não logado, abortando busca de transações");
+        return; // Se não houver um usuário logado, não faz a busca
+      }
+
+      console.log("Buscando transações para o usuário:", user.uid); // Verifique o UID
 
       const userTransactionsQuery = query(
         collection(db, "transactions"),
@@ -37,6 +44,9 @@ const FinancialDashboard = () => {
         id: doc.id,
         ...doc.data(),
       }));
+
+      console.log("Transações recuperadas:", fetchedTransactions); // Verifique as transações recuperadas
+
       setTransactions(fetchedTransactions);
     };
 
@@ -44,24 +54,31 @@ const FinancialDashboard = () => {
   }, [user]);
 
   useEffect(() => {
-    // Filtrar as transações pelo mês selecionado
-    const filtered = transactions.filter((transaction) => {
-      const transactionDate = new Date(transaction.date);
-      return transactionDate.getMonth() + 1 === selectedMonth;
-    });
-    setFilteredTransactions(filtered);
+    if (transactions.length === 0) {
+      console.log("Nenhuma transação encontrada para o usuário");
+    } else {
+      // Filtrar as transações pelo mês selecionado
+      const filtered = transactions.filter((transaction) => {
+        const transactionDate = new Date(transaction.date);
+        return transactionDate.getMonth() + 1 === selectedMonth;
+      });
 
-    // Calcular receitas e despesas para o mês filtrado
-    const income = filtered
-      .filter((transaction) => transaction.type === "Receita")
-      .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
-    const expenses = filtered
-      .filter((transaction) => transaction.type === "Despesa")
-      .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+      console.log("Transações filtradas por mês:", filtered); // Verifique as transações filtradas
 
-    setIncomeTotal(income);
-    setExpenseTotal(expenses);
-    setBalance(income - expenses);
+      setFilteredTransactions(filtered);
+
+      // Calcular receitas e despesas para o mês filtrado
+      const income = filtered
+        .filter((transaction) => transaction.type === "Receita")
+        .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+      const expenses = filtered
+        .filter((transaction) => transaction.type === "Despesa")
+        .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+
+      setIncomeTotal(income);
+      setExpenseTotal(expenses);
+      setBalance(income - expenses);
+    }
   }, [transactions, selectedMonth]);
 
   const handleMonthChange = (event) => {
