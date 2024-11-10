@@ -41,6 +41,9 @@
 .expense-card {
     background-image: linear-gradient(135deg, #fc002a, #a50606);
 }
+button{
+    margin: 5px;
+}
 
 .balance-card.positive {
     background-image: linear-gradient(135deg, #28a745, #218838);

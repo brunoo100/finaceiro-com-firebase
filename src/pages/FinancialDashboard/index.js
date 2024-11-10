@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { db, auth } from "../../services/firebase";
 import "./FinancialDashboard.css";
 
@@ -12,6 +12,7 @@ const FinancialDashboard = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editTransaction, setEditTransaction] = useState(null); // Estado para controlar a transação em edição
 
   // Recuperando o usuário logado e seu userId
   useEffect(() => {
@@ -19,9 +20,6 @@ const FinancialDashboard = () => {
       const currentUser = auth.currentUser;
       if (currentUser) {
         setUserId(currentUser.uid);
-        console.log("Usuário logado:", currentUser.uid);
-      } else {
-        console.log("Nenhum usuário logado");
       }
     };
 
@@ -41,13 +39,7 @@ const FinancialDashboard = () => {
   // Recuperando transações para o userId
   useEffect(() => {
     const fetchTransactions = async () => {
-      if (!userId) {
-        console.log("userId não encontrado, abortando busca de transações");
-        setLoading(false);
-        return;
-      }
-
-      console.log("Buscando transações para o userId:", userId);
+      if (!userId) return;
 
       const userTransactionsQuery = query(
         collection(db, "transactions"),
@@ -60,8 +52,6 @@ const FinancialDashboard = () => {
         ...doc.data(),
       }));
 
-      console.log("Transações recuperadas:", fetchedTransactions);
-
       setTransactions(fetchedTransactions);
       setLoading(false);
     };
@@ -71,25 +61,15 @@ const FinancialDashboard = () => {
 
   // Filtrando transações por mês e calculando totais
   useEffect(() => {
-    if (transactions.length === 0) {
-      console.log("Nenhuma transação encontrada para o usuário");
-      setFilteredTransactions([]);
-      setIncomeTotal(0);
-      setExpenseTotal(0);
-      setBalance(0);
-      return;
-    }
+    if (transactions.length === 0) return;
 
     const filtered = transactions.filter((transaction) => {
       const transactionDate = new Date(transaction.date);
       return transactionDate.getMonth() + 1 === selectedMonth;
     });
 
-    console.log("Transações filtradas por mês:", filtered);
-
     setFilteredTransactions(filtered);
 
-    // Calcular receitas e despesas para o mês filtrado
     const income = filtered
       .filter((transaction) => transaction.type.toLowerCase() === "receita")
       .reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
@@ -101,14 +81,37 @@ const FinancialDashboard = () => {
     setIncomeTotal(income);
     setExpenseTotal(expenses);
     setBalance(income - expenses);
-
-    console.log("Total de receita:", income);
-    console.log("Total de despesa:", expenses);
   }, [transactions, selectedMonth]);
 
   // Função para mudar o mês
   const handleMonthChange = (event) => {
     setSelectedMonth(parseInt(event.target.value, 10));
+  };
+
+  // Função para excluir uma transação
+  const handleDeleteTransaction = async (transactionId) => {
+    await deleteDoc(doc(db, "transactions", transactionId));
+    setTransactions(transactions.filter((transaction) => transaction.id !== transactionId));
+  };
+
+  // Função para editar uma transação
+  const handleEditTransaction = (transaction) => {
+    setEditTransaction(transaction); // Preenche o estado com a transação que será editada
+  };
+
+  // Função para salvar a edição de uma transação
+  const handleSaveEdit = async () => {
+    const transactionRef = doc(db, "transactions", editTransaction.id);
+    await updateDoc(transactionRef, {
+      description: editTransaction.description,
+      type: editTransaction.type,
+      amount: editTransaction.amount,
+    });
+
+    setTransactions(transactions.map((transaction) =>
+      transaction.id === editTransaction.id ? editTransaction : transaction
+    ));
+    setEditTransaction(null); // Limpa o estado de edição após salvar
   };
 
   if (loading) {
@@ -169,15 +172,67 @@ const FinancialDashboard = () => {
                 <th>Descrição</th>
                 <th>Tipo</th>
                 <th>Valor</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
               {filteredTransactions.map((transaction) => (
                 <tr key={transaction.id}>
                   <td>{new Date(transaction.date).toLocaleDateString()}</td>
-                  <td>{transaction.description}</td>
-                  <td>{transaction.type}</td>
-                  <td>R$ {parseFloat(transaction.amount).toFixed(2)}</td>
+                  <td>
+                    {editTransaction && editTransaction.id === transaction.id ? (
+                      <input
+                        type="text"
+                        value={editTransaction.description}
+                        onChange={(e) =>
+                          setEditTransaction({ ...editTransaction, description: e.target.value })
+                        }
+                      />
+                    ) : (
+                      transaction.description
+                    )}
+                  </td>
+                  <td>
+                    {editTransaction && editTransaction.id === transaction.id ? (
+                      <select
+                        value={editTransaction.type}
+                        onChange={(e) =>
+                          setEditTransaction({ ...editTransaction, type: e.target.value })
+                        }
+                      >
+                        <option value="receita">Receita</option>
+                        <option value="despesa">Despesa</option>
+                      </select>
+                    ) : (
+                      transaction.type
+                    )}
+                  </td>
+                  <td>
+                    {editTransaction && editTransaction.id === transaction.id ? (
+                      <input
+                        type="number"
+                        value={editTransaction.amount}
+                        onChange={(e) =>
+                          setEditTransaction({ ...editTransaction, amount: e.target.value })
+                        }
+                      />
+                    ) : (
+                      `R$ ${parseFloat(transaction.amount).toFixed(2)}`
+                    )}
+                  </td>
+                  <td>
+                    {editTransaction && editTransaction.id === transaction.id ? (
+                      <>
+                        <button onClick={handleSaveEdit}>Salvar</button>
+                        <button onClick={() => setEditTransaction(null)}>Cancelar</button>
+                      </>
+                    ) : (
+                      <>
+                        <button className="btn-2" onClick={() => handleEditTransaction(transaction)}>Editar</button>
+                        <button className="btn-2" onClick={() => handleDeleteTransaction(transaction.id)}>Excluir</button>
+                      </>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
